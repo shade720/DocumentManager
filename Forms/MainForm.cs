@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace DocumentManager.Forms
@@ -40,6 +41,11 @@ namespace DocumentManager.Forms
         {
             if (_baseRegisterForm.Visible) _baseRegisterForm.RefreshTable();
             else _incomingRegisterForm.RefreshTable();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            _documentManager.Dispose();
         }
     }
 }

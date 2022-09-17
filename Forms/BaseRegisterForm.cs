@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Windows.Forms;
 using DocumentManager.Models.DocumentsModels;
 using DocumentManager.Models.Filters;
@@ -16,13 +16,18 @@ namespace DocumentManager.Forms
             {"Last 30 days", 30},
             {"Last 90 days", 90}
         };
+
+        protected override void OnShown(EventArgs e)
+        {
+            RefreshTable();
+        }
+
         public BaseRegisterForm(Models.DocumentManager manager)
         {
             _manager = manager;
             InitializeComponent();
             FromDateTimePicker.Value = DateTime.Now.AddDays(-1);
             ToDateTimePicker.Value = DateTime.Now.AddDays(1);
-            RefreshTable();
         }
 
         private void CreateNewDocumentButton_Click(object sender, EventArgs e)
@@ -66,7 +71,7 @@ namespace DocumentManager.Forms
                         document.Name,
                         document.DocumentKind.Name,
                         document.Subject,
-                        document.CreatedDate.ToString(),
+                        document.CreatedDate.ToString(CultureInfo.InvariantCulture),
                         document.DocumentNumber
                     );
                 }

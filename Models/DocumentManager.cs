@@ -1,11 +1,11 @@
-﻿using DocumentManager.Models.DocumentsModels;
-using DocumentManager.Models.Filters;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using DocumentManager.Models.DocumentsModels;
+using DocumentManager.Models.Filters;
 
 namespace DocumentManager.Models
 {
-    public class DocumentManager
+    public class DocumentManager : IDisposable
     {
         private readonly DatabaseClient _databaseClient;
 
@@ -42,6 +42,7 @@ namespace DocumentManager.Models
                 .Build();
             _databaseClient.AddBaseDocument(baseDocument);
         }
+
         public void AddToIncomingRegister(string name, string subject, string addressee, string counterparty, string deliveryMethod, string cameFrom)
         {
             var addresseeSplitted = addressee.Split(' ');
@@ -72,6 +73,11 @@ namespace DocumentManager.Models
         public void UpdateIncomingDocument(IncomingDocument valueForUpdate)
         {
             _databaseClient.UpdateIncomingDocument(valueForUpdate);
+        }
+
+        public void Dispose()
+        {
+            _databaseClient?.Dispose();
         }
     }
 }

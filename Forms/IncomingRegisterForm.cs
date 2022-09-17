@@ -16,13 +16,17 @@ namespace DocumentManager.Forms
             {"Last 90 days", 90}
         };
 
+        protected override void OnShown(EventArgs e)
+        {
+            RefreshTable();
+        }
+
         public IncomingRegisterForm(Models.DocumentManager manager)
         {
             _manager = manager;
             InitializeComponent();
             FromDateTimePicker.Value = DateTime.Now.AddDays(-1);
             ToDateTimePicker.Value = DateTime.Now.AddDays(1);
-            RefreshTable();
         }
 
         private void CreateNewDocumentButton_Click(object sender, EventArgs e)
