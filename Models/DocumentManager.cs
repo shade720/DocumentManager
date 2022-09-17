@@ -25,7 +25,7 @@ namespace DocumentManager.Models
             return _databaseClient.GetAllBaseDocuments(filter);
         }
 
-        public IEnumerable<IncomingDocument> GetIncomingDocuments(IncomingDocumentsFilter filter = null)
+        public IEnumerable<IncomingDocument> GetIncomingDocuments(IncomingDocumentFilter filter = null)
         {
             return _databaseClient.GetAllIncomingDocuments(filter);
         }

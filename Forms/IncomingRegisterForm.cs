@@ -40,13 +40,13 @@ namespace DocumentManager.Forms
             RefreshTable();
         }
 
-        private IncomingDocumentsFilter CreateFilter()
+        private IncomingDocumentFilter CreateFilter()
         {
             if (FilteringByDateComboBox.SelectedItem != null && FilteringByDateComboBox.SelectedItem.ToString() != "")
             {
                 FromDateTimePicker.Value = DateTime.Now.AddDays(-_daysFromComboBox[FilteringByDateComboBox.SelectedItem.ToString()]);
             }
-            return new IncomingDocumentsFilter
+            return new IncomingDocumentFilter
             {
                 BaseDocumentFilter = new BaseDocumentFilter ("IncomingDocument")
                 {

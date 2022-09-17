@@ -2,7 +2,7 @@
 
 namespace DocumentManager.Models.Filters
 {
-    public class IncomingDocumentsFilter
+    public class IncomingDocumentFilter
     {
         public BaseDocumentFilter BaseDocumentFilter { get; set; }
         public DeliveryMethod ByDeliveryMethod { get; set; }

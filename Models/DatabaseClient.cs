@@ -59,7 +59,7 @@ namespace DocumentManager.Models
             }
         }
 
-        public IEnumerable<IncomingDocument> GetAllIncomingDocuments(IncomingDocumentsFilter filter = null)
+        public IEnumerable<IncomingDocument> GetAllIncomingDocuments(IncomingDocumentFilter filter = null)
         {
             var connection = new SqlConnection(_connectionString);
             SqlDataReader reader = null;
@@ -325,7 +325,7 @@ namespace DocumentManager.Models
             return sqlFilter;
         }
 
-        private string FilterToSql(IncomingDocumentsFilter filter)
+        private string FilterToSql(IncomingDocumentFilter filter)
         {
             var sqlFilter = FilterToSql(filter.BaseDocumentFilter);
             if (!string.IsNullOrEmpty(filter.ByDeliveryMethod.MethodName)) sqlFilter += $" AND Del.MethodName = '{filter.ByDeliveryMethod.MethodName}'";

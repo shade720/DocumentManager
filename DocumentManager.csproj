@@ -102,7 +102,7 @@
     <Compile Include="Models\DocumentsModels\DeliveryMethod.cs" />
     <Compile Include="Models\DocumentsModels\DocumentKind.cs" />
     <Compile Include="Models\DocumentsModels\IncomingDocument.cs" />
-    <Compile Include="Models\Filters\IncomingDocumentsFilter.cs" />
+    <Compile Include="Models\Filters\IncomingDocumentFilter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\BaseDocumentForm.resx">
