@@ -4,6 +4,8 @@ using DocumentManager.Models.Filters;
 using DocumentManager.Properties;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Net.NetworkInformation;
 
 namespace DocumentManager.Models
 {
@@ -210,21 +212,27 @@ namespace DocumentManager.Models
 
         private string GetSqlWhere(BaseDocumentFilter filter)
         {
-            var sqlFilter = "WHERE ";
-            if (!string.IsNullOrEmpty(filter.DocumentKind)) sqlFilter += $"DocumentKindTable.DocumentKind = '{filter.DocumentKind}'";
-            if (!string.IsNullOrEmpty(filter.DocumentNumber)) sqlFilter += $" AND DocumentNumber = '{filter.DocumentNumber}'";
-            if (!string.IsNullOrEmpty(filter.ByName)) sqlFilter += $" AND BaseDocumentTable.Name = '{filter.ByName}'";
-            if (filter.FromDate.Year > 1) sqlFilter += $" AND CreationDate >= '{filter.FromDate:yyyy-MM-dd}'";
-            if (filter.ToDate.Year > 1) sqlFilter += $" AND CreationDate <= '{filter.ToDate:yyyy-MM-dd}'";
-            return sqlFilter;
+            var sqlExpressionsList = new List<string>
+            {
+                {"WHERE "},
+                {!string.IsNullOrEmpty(filter.DocumentKind) ? $"DocumentKindTable.DocumentKind = '{filter.DocumentKind}'" : string.Empty},
+                {!string.IsNullOrEmpty(filter.DocumentNumber) ? $"DocumentNumber = '{filter.DocumentNumber}'" : string.Empty},
+                {!string.IsNullOrEmpty(filter.ByName) ? $"BaseDocumentTable.Name = '{filter.ByName}'" : string.Empty},
+                {filter.FromDate.Year > 1 ? $"CreationDate >= '{filter.FromDate:yyyy-MM-dd}'" : string.Empty},
+                {filter.ToDate.Year > 1 ? $"CreationDate <= '{filter.ToDate:yyyy-MM-dd}'" : string.Empty}
+            };
+            return string.Concat(sqlExpressionsList[0], string.Join(" AND ", sqlExpressionsList.Skip(1).Where(str => str != string.Empty)));
         }
 
         private string GetSqlWhere(IncomingDocumentFilter filter)
         {
-            var sqlFilter = GetSqlWhere(filter.BaseDocumentFilter);
-            if (!string.IsNullOrEmpty(filter.ByDeliveryMethod.MethodName)) sqlFilter += $" AND DeliveryMethodTable.MethodName = '{filter.ByDeliveryMethod.MethodName}'";
-            if (!string.IsNullOrEmpty(filter.ByCounterparty.OrganizationName)) sqlFilter += $" AND CounterpartyTable.OrganizationName = '{filter.ByCounterparty.OrganizationName}'";
-            return sqlFilter;
+            var sqlExpressionsList = new List<string>
+            {
+                GetSqlWhere(filter.BaseDocumentFilter),
+                {!string.IsNullOrEmpty(filter.ByDeliveryMethod.MethodName) ? $"DeliveryMethodTable.MethodName = '{filter.ByDeliveryMethod.MethodName}'" : string.Empty},
+                {!string.IsNullOrEmpty(filter.ByCounterparty.OrganizationName) ? $"CounterpartyTable.OrganizationName = '{filter.ByCounterparty.OrganizationName}'" : string.Empty}
+            };
+            return string.Join(" AND ", sqlExpressionsList.Where(str => str != string.Empty));
         }
 
         #endregion

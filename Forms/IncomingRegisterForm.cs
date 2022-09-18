@@ -125,7 +125,6 @@ namespace DocumentManager.Forms
             oldIncomingDocument.Counterparty.OrganizationName = changedIncomingDocument.Counterparty;
             oldIncomingDocument.DeliveryMethod.MethodName = changedIncomingDocument.DeliveryMethod;
             oldIncomingDocument.CameFrom.OrganizationName = changedIncomingDocument.CameFrom;
-
             try
             {
                 _manager.UpdateIncomingDocument(oldIncomingDocument);
