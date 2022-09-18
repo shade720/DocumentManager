@@ -45,33 +45,23 @@ namespace DocumentManager.Forms
             RefreshTable();
         }
 
-        private BaseDocumentFilter CreateFilter()
-        {
-            if (FilteringByDateComboBox.SelectedItem != null && FilteringByDateComboBox.SelectedItem.ToString() != "")
-            {
-                FromDateTimePicker.Value = DateTime.Now.AddDays(-_daysFromComboBox[FilteringByDateComboBox.SelectedItem.ToString()]);
-            }
-            return new BaseDocumentFilter ("BaseDocument")
-            {
-                ByName = SearchTextBox.Text,
-                FromDate = FromDateTimePicker.Value,
-                ToDate = ToDateTimePicker.Value
-            };
-        }
-
         public void RefreshTable()
         {
-            BaseDocumentsGrid.Rows.Clear();
             try
             {
-                foreach (var document in _manager.GetBaseDocuments(CreateFilter()))
+                BaseDocumentsGrid.Rows.Clear();
+                if (FilteringByDateComboBox.SelectedItem != null && FilteringByDateComboBox.SelectedItem.ToString() != "")
+                {
+                    FromDateTimePicker.Value = DateTime.Now.AddDays(-_daysFromComboBox[FilteringByDateComboBox.SelectedItem.ToString()]);
+                }
+                foreach (var document in _manager.GetBaseDocuments(SearchTextBox.Text, FromDateTimePicker.Value, ToDateTimePicker.Value))
                 {
                     BaseDocumentsGrid.Rows.Add(
                         document.Discriminator,
                         document.Name,
                         document.DocumentKind.Name,
                         document.Subject,
-                        document.CreatedDate.ToString(CultureInfo.InvariantCulture),
+                        document.CreatedDate,
                         document.DocumentNumber
                     );
                 }

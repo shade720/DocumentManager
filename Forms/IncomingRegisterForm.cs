@@ -44,31 +44,18 @@ namespace DocumentManager.Forms
             RefreshTable();
         }
 
-        private IncomingDocumentFilter CreateFilter()
-        {
-            if (FilteringByDateComboBox.SelectedItem != null && FilteringByDateComboBox.SelectedItem.ToString() != "")
-            {
-                FromDateTimePicker.Value = DateTime.Now.AddDays(-_daysFromComboBox[FilteringByDateComboBox.SelectedItem.ToString()]);
-            }
-            return new IncomingDocumentFilter
-            {
-                BaseDocumentFilter = new BaseDocumentFilter ("IncomingDocument")
-                {
-                    ByName = SearchTextBox.Text,
-                    FromDate = FromDateTimePicker.Value,
-                    ToDate = ToDateTimePicker.Value
-                },
-                ByCounterparty = new Counterparty { OrganizationName = CounterpartyComboBox.SelectedItem != null ? CounterpartyComboBox.SelectedItem.ToString() : string.Empty},
-                ByDeliveryMethod = new DeliveryMethod { MethodName = DeliveryMethodComboBox.SelectedItem != null ? DeliveryMethodComboBox.SelectedItem.ToString() : string.Empty }
-            };
-        }
-
         public void RefreshTable()
         {
             try
             {
                 IncomingDocumentsGrid.Rows.Clear();
-                foreach (var document in _manager.GetIncomingDocuments(CreateFilter()))
+                if (FilteringByDateComboBox.SelectedItem != null && FilteringByDateComboBox.SelectedItem.ToString() != "")
+                {
+                    FromDateTimePicker.Value = DateTime.Now.AddDays(-_daysFromComboBox[FilteringByDateComboBox.SelectedItem.ToString()]);
+                }
+                var counterpartyFilter = CounterpartyComboBox.SelectedItem != null ? CounterpartyComboBox.SelectedItem.ToString() : string.Empty;
+                var deliveryMethodFilter = DeliveryMethodComboBox.SelectedItem != null ? DeliveryMethodComboBox.SelectedItem.ToString() : string.Empty;
+                foreach (var document in _manager.GetIncomingDocuments(SearchTextBox.Text, FromDateTimePicker.Value, ToDateTimePicker.Value, counterpartyFilter, deliveryMethodFilter))
                 {
                     IncomingDocumentsGrid.Rows.Add
                     (

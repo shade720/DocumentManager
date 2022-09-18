@@ -120,4 +120,7 @@
   <data name="ConnectionString" xml:space="preserve">
     <value>Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename='|DataDirectory|\DocumentsDatabase.mdf';Integrated Security=True</value>
   </data>
+  <data name="DefaultConnectionString" xml:space="preserve">
+    <value>Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename='E:\Projects\DocumentManager\DocumentsDatabase.mdf';Integrated Security=True</value>
+  </data>
 </root>

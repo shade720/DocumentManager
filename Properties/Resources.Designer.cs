@@ -68,5 +68,14 @@ namespace DocumentManager.Properties {
                 return ResourceManager.GetString("ConnectionString", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=&apos;E:\Projects\DocumentManager\DocumentsDatabase.mdf&apos;;Integrated Security=True.
+        /// </summary>
+        internal static string DefaultConnectionString {
+            get {
+                return ResourceManager.GetString("DefaultConnectionString", resourceCulture);
+            }
+        }
     }
 }

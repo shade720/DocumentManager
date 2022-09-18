@@ -5,7 +5,6 @@ using DocumentManager.Properties;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Net.NetworkInformation;
 
 namespace DocumentManager.Models
 {
@@ -13,10 +12,7 @@ namespace DocumentManager.Models
     {
         private readonly SqlConnection _connection = new SqlConnection(Resources.ConnectionString);
 
-        public DatabaseClient()
-        {
-            _connection.Open();
-        }
+        public DatabaseClient() => _connection.Open();
 
         #region Select
 
@@ -35,7 +31,7 @@ namespace DocumentManager.Models
                 while (reader.Read())
                 {
                     yield return new BaseDocumentBuilder()
-                        .AddDiscriminator(reader.GetGuid(0))
+                        .AddDiscriminator(new Guid(reader.GetString(0)))
                         .AddName(reader.GetString(1))
                         .AddDocumentKind(reader.GetInt32(3), reader.GetString(2))
                         .AddSubject(reader.GetString(4))
@@ -75,7 +71,7 @@ namespace DocumentManager.Models
                 {
                     var baseDocument = new BaseDocumentBuilder()
                         .AddId(reader.GetInt32(0))
-                        .AddDiscriminator(reader.GetGuid(1))
+                        .AddDiscriminator(new Guid(reader.GetString(1)))
                         .AddName(reader.GetString(2))
                         .AddDocumentKind(reader.GetInt32(3), reader.GetString(4))
                         .AddSubject(reader.GetString(5))
@@ -125,7 +121,7 @@ namespace DocumentManager.Models
                     (Discriminator, Name, DocumentKind, Subject, CreationDate, DocumentNumber) 
                     VALUES 
                     (@Discriminator, @Name, @DocumentKind, @Subject, @CreationDate, @DocumentNumber)";
-            command.Parameters.AddWithValue("@Discriminator", baseDocument.Discriminator);
+            command.Parameters.AddWithValue("@Discriminator", baseDocument.Discriminator.ToString());
             command.Parameters.AddWithValue("@Name", baseDocument.Name);
             command.Parameters.AddWithValue("@DocumentKind", documentKindId);
             command.Parameters.AddWithValue("@Subject", baseDocument.Subject);
@@ -173,7 +169,7 @@ namespace DocumentManager.Models
                     CreationDate = @CreationDate, 
                     DocumentNumber = @DocumentNumber 
                     WHERE DocumentNumber = @DocumentNumber";
-            command.Parameters.AddWithValue("@Discriminator", newBaseDocument.Discriminator);
+            command.Parameters.AddWithValue("@Discriminator", newBaseDocument.Discriminator.ToString());
             command.Parameters.AddWithValue("@Name", newBaseDocument.Name);
             command.Parameters.AddWithValue("@DocumentKind", documentKind);
             command.Parameters.AddWithValue("@Subject", newBaseDocument.Subject);
@@ -215,7 +211,7 @@ namespace DocumentManager.Models
             var sqlExpressionsList = new List<string>
             {
                 {"WHERE "},
-                {!string.IsNullOrEmpty(filter.DocumentKind) ? $"DocumentKindTable.DocumentKind = '{filter.DocumentKind}'" : string.Empty},
+                {!string.IsNullOrEmpty(filter.Discriminator.ToString()) ? $"Discriminator = '{filter.Discriminator}'" : string.Empty},
                 {!string.IsNullOrEmpty(filter.DocumentNumber) ? $"DocumentNumber = '{filter.DocumentNumber}'" : string.Empty},
                 {!string.IsNullOrEmpty(filter.ByName) ? $"BaseDocumentTable.Name = '{filter.ByName}'" : string.Empty},
                 {filter.FromDate.Year > 1 ? $"CreationDate >= '{filter.FromDate:yyyy-MM-dd}'" : string.Empty},

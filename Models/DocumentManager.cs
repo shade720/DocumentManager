@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using DocumentManager.Models.DocumentsModels;
 using DocumentManager.Models.Filters;
 
@@ -11,8 +12,8 @@ namespace DocumentManager.Models
 
         private readonly Dictionary<string, Guid> _documentsGuids = new Dictionary<string, Guid>
         {
-            {"baseDocumentGuid", Guid.NewGuid()},
-            {"incomingDocumentGuid", Guid.NewGuid()}
+            {"baseDocumentGuid", new Guid("21EC2020-3AEA-1069-A2DD-08002B30309D")},
+            {"incomingDocumentGuid", new Guid("11AC2000-3AEA-1069-A2DD-08002B30309D")}
         };
 
         public DocumentManager()
@@ -20,13 +21,30 @@ namespace DocumentManager.Models
             _databaseClient = new DatabaseClient();
         }
 
-        public IEnumerable<BaseDocument> GetBaseDocuments(BaseDocumentFilter filter = null)
+        public IEnumerable<BaseDocument> GetBaseDocuments(string withName, DateTime fromDate, DateTime toDate)
         {
+            var filter = new BaseDocumentFilter(_documentsGuids["baseDocumentGuid"])
+            {
+                ByName = withName,
+                FromDate = fromDate,
+                ToDate = toDate
+            };
             return _databaseClient.GetAllBaseDocuments(filter);
         }
 
-        public IEnumerable<IncomingDocument> GetIncomingDocuments(IncomingDocumentFilter filter = null)
+        public IEnumerable<IncomingDocument> GetIncomingDocuments(string withName, DateTime fromDate, DateTime toDate, string withCounterparty, string withDeliveryMethod)
         {
+            var filter = new IncomingDocumentFilter
+            {
+                BaseDocumentFilter = new BaseDocumentFilter(_documentsGuids["incomingDocumentGuid"])
+                {
+                    ByName = withName,
+                    FromDate = fromDate,
+                    ToDate = toDate
+                },
+                ByCounterparty = new Counterparty { OrganizationName = withCounterparty },
+                ByDeliveryMethod = new DeliveryMethod { MethodName = withDeliveryMethod }
+            };
             return _databaseClient.GetAllIncomingDocuments(filter);
         }
 
